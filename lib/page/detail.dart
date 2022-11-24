@@ -152,7 +152,7 @@ class _DetailContentViewState extends State<DetailContentView> {
             ),
           ),
           Text(
-            "가공식품",
+            "유통기한",
             style: TextStyle(
               color: Colors.grey,
               fontSize: 12,
@@ -260,7 +260,6 @@ class _DetailContentViewState extends State<DetailContentView> {
         extendBodyBehindAppBar: true,
         appBar: _appbarWidget(),
         body: _bodyWidget(),
-
         bottomNavigationBar: _bottomBarWidget(),
       );
     }

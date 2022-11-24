@@ -1,9 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:home/firebase_options.dart';
 import 'package:home/page/app.dart';
 
 void main() async{
-  await Firebase.initializeApp();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -21,8 +26,15 @@ class MyApp extends StatelessWidget {
             titleTextStyle:  TextStyle(color: Colors.black)
         ),
         primaryColor:Colors.black,
-
       ),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('ko', ''),
+        Locale(' en', ''),
+      ],
       home: App(),
     );
   }

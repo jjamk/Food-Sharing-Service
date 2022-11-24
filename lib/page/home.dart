@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home/page/detail.dart';
 import 'package:home/repository/contents_repository.dart';
 import 'package:home/utils/data_utils.dart';
+import 'package:home/page/post.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -244,9 +245,8 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.green,
         child: Icon(Icons.add),
         onPressed: () {
-          AlertDialog(
-            title:  Text("글쓰기 창으로 넘어갑니다.")
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>
+          post()));
         },
       )
     );
