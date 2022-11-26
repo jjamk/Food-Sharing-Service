@@ -4,6 +4,7 @@ import 'package:home/page/detail.dart';
 import 'package:home/repository/contents_repository.dart';
 import 'package:home/utils/data_utils.dart';
 import 'package:home/page/post.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -151,7 +152,7 @@ class _HomeState extends State<Home> {
                     borderRadius: BorderRadius.all(Radius.circular(25)),
                     child: Hero(
                       tag: datas[index]["cid"]!,
-                      child: Image.asset(datas[index]["image"]!,
+                      child: Image.asset(datas[0]["image"]!,
                         width: 100,
                         height: 100,
                         fit: BoxFit.cover,

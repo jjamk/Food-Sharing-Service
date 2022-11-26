@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:home/page/home.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:home/repository/contents_repository.dart';
 
 class post extends StatefulWidget {
   const post({Key? key}) : super(key: key);
@@ -26,7 +29,6 @@ class _postState extends State<post> {
   PickedFile? _image;
 
 
-
   PreferredSizeWidget _appbarWidget() {
     return AppBar(
       backgroundColor: Colors.transparent,
@@ -37,9 +39,8 @@ class _postState extends State<post> {
           icon: Icon(Icons.close, color: Colors.grey)),
       actions: [
         TextButton(onPressed: () {
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Home()));
+          _uploadImage();
+          //Navigator.pop(context);
     },
           child: Text(
               "업로드",
@@ -212,6 +213,25 @@ class _postState extends State<post> {
       );
   }
 
+  Future _uploadImage() async {
+    final firebaseStorageRef = FirebaseStorage.instance
+        .ref()
+        .child('user_image')
+        .child('jpg');
+    await firebaseStorageRef.putFile(File(_image!.path));
+
+    final url = await firebaseStorageRef.getDownloadURL();
+    final user = FirebaseFirestore.instance.collection("post").doc("post1");
+    user.set({
+      "title": "제목",
+      "location": "가수원동",
+      "price": "30000",
+      "likes": url,
+    });
+
+
+  }
+
   Widget _bodyWidget() {
     return SingleChildScrollView(
       child: Column(
@@ -285,8 +305,7 @@ class _postState extends State<post> {
               labelText: '판매할 가격'),
               ),
             visible: _isSaleChecked,
-
-          )
+          ),
         ],
       )
     );

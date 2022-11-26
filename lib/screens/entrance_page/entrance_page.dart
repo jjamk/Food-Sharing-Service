@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled3/screens/chatting_page/chatting_page.dart';
-import 'package:untitled3/screens/chatting_page/local_utils/ChattingProvider.dart';
+import 'package:home/screens/chatting_page/chatting_page.dart';
+import 'package:home/screens/chatting_page/local_utils/ChattingProvider.dart';
 import 'package:uuid/uuid.dart';
 
 class EntrancePage extends StatefulWidget{

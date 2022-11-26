@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:untitled3/models/ChattingModel.dart';
+import 'package:home/models/ChattingModel.dart';
 import 'package:flutter/material.dart';
 
 

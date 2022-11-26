@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:home/page/map.dart';
 
 import 'home.dart';
 import 'chat.dart';
@@ -25,7 +26,7 @@ class _AppState extends State<App>{
   Widget _bodyWidget() {
     switch (_currentPageIndex) {
       case 0:
-        return Container();
+        return MapView();
       case 1:
         return Home();
       case 2:

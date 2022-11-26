@@ -48,10 +48,16 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-    	<string>Used to demonstrate image picker plugin</string>
-    	<key>NSMicrophoneUsageDescription</key>
-    	<string>Used to capture audio for image picker plugin</string>
-    	<key>NSPhotoLibraryUsageDescription</key>
-    	<string>Used to demonstrate image picker plugin</string>
+        	<string>Used to demonstrate image picker plugin</string>
+        	<key>NSMicrophoneUsageDescription</key>
+        	<string>Used to capture audio for image picker plugin</string>
+        	<key>NSPhotoLibraryUsageDescription</key>
+        	<string>Used to demonstrate image picker plugin</string>
+        <key>NSAppTransportSecurity</key>
+        <dict>
+            <key>NSAllowsLocalNetworking</key>
+            <true/>
+        </dict>
 </dict>
+
 </plist>

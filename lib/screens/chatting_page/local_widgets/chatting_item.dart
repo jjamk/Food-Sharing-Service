@@ -1,5 +1,5 @@
-import 'package:untitled3/models/ChattingModel.dart';
-import 'package:untitled3/screens/chatting_page/local_utils/ChattingProvider.dart';
+import 'package:home/models/ChattingModel.dart';
+import 'package:home/screens/chatting_page/local_utils/ChattingProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
