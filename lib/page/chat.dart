@@ -42,23 +42,3 @@ class _ChatViewState extends State<ChatView> {
     //   );
   }
 }
-
-//데이터 삽입
-void createData() {
-  final user = FirebaseFirestore.instance.collection("post").doc("post1");
-  user.set({
-    "title": "제목",
-    "location": "가수원동",
-    "price": "30000",
-    "likes": "2"
-  });
-}
-
-//데이터 불러오기
-void readData() {
-  final user = FirebaseFirestore.instance.collection("post").doc("post1");
-  user.get().then((value) => {
-    print("gg"),
-    print(value.data())
-  });
-}

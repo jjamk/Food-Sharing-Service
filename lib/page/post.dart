@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,10 +24,17 @@ class _postState extends State<post> {
 
   TextEditingController _BirthdayController =
   TextEditingController(text: " 날짜를 선택하세요");
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _contentController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
   DateTime? tempPickedDate;
   DateTime _selectedDate = DateTime.now();
 
   PickedFile? _image;
+  String postTitle ="";
+  String postContent = "";
+  String postPrice = "무료나눔";
+  String postFoodshelf = "";
 
 
   PreferredSizeWidget _appbarWidget() {
@@ -40,7 +48,7 @@ class _postState extends State<post> {
       actions: [
         TextButton(onPressed: () {
           _uploadImage();
-          //Navigator.pop(context);
+          Navigator.pop(context);
     },
           child: Text(
               "업로드",
@@ -78,6 +86,11 @@ class _postState extends State<post> {
                             isDense: true,
                         ),
                           controller: _BirthdayController,
+                          onChanged: (value) {
+                            setState(() {
+                              postFoodshelf = value;
+                            });
+                          },
               ),
           ]
       ))),
@@ -220,13 +233,25 @@ class _postState extends State<post> {
         .child('jpg');
     await firebaseStorageRef.putFile(File(_image!.path));
 
+    //랜덤키 생성
+    const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    Random _rnd = Random();
+    String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+        length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
     final url = await firebaseStorageRef.getDownloadURL();
-    final user = FirebaseFirestore.instance.collection("post").doc("post1");
-    user.set({
-      "title": "제목",
+    final user = FirebaseFirestore.instance;
+    String postKey = getRandomString(16);
+
+    user.collection("post").doc(postKey).set({
+      "postkey": postKey,
+      "image": url,
+      "title": postTitle,
+      "foodshelf": postFoodshelf,
       "location": "가수원동",
-      "price": "30000",
-      "likes": url,
+      "Content":postContent,
+      "price": postPrice,
+
     });
 
 
@@ -246,6 +271,12 @@ class _postState extends State<post> {
           Container(
             padding: EdgeInsets.all(4.0),
               child: TextField(
+                controller: _titleController,
+                onChanged: (value) {
+                  setState(() {
+                    postTitle = value;
+                  });
+                },
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: '제목',
@@ -260,6 +291,12 @@ class _postState extends State<post> {
           Container(
                 padding: EdgeInsets.all(4.0),
                 child: TextField(
+                    controller: _contentController,
+                    onChanged: (value) {
+                      setState(() {
+                        postContent = value;
+                      });
+                    },
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       contentPadding: EdgeInsets.symmetric(vertical: 40.0),
@@ -279,6 +316,7 @@ class _postState extends State<post> {
                 Checkbox(value: _isShareChecked, onChanged: (value) {
                   setState(() {
                     _isShareChecked = value!;
+                    postPrice = "무료나눔";
                     if (_isSaleChecked)
                       _isSaleChecked = false;
                   });
@@ -300,6 +338,12 @@ class _postState extends State<post> {
           _line(),
           Visibility(
               child: TextField(
+                controller: _priceController,
+                onChanged: (value) {
+                  setState(() {
+                    postPrice = value;
+                  });
+                },
               decoration:
               InputDecoration(border: OutlineInputBorder(),
               labelText: '판매할 가격'),

@@ -1,6 +1,6 @@
 class ContentsRepository {
   Map<String, dynamic>datas= {
-    "gasuwon":[
+    "share":[
       {
         "cid": "1",
         "image": "assets/images/img1.jpeg",
@@ -26,7 +26,7 @@ class ContentsRepository {
         "likes": "0"
       },
   ],
-    "guanzeo": [
+    "sale": [
       {
         "cid": "4",
         "image": "assets/images/img4.jpeg",

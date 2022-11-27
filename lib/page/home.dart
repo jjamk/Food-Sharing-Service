@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:home/models/PostModel.dart';
 import 'package:home/page/detail.dart';
 import 'package:home/repository/contents_repository.dart';
 import 'package:home/utils/data_utils.dart';
@@ -63,18 +64,19 @@ List<String> recentList = ["검색기록"];
 }
 
 class _HomeState extends State<Home> {
+  List<PostModel> datas2 = [];
+
   late String currentLocation;
   ContentsRepository contentsRepository = new ContentsRepository();
   final Map<String, String> locationTypeToString = {
-    "gasuwon": "가수원동",
-    "guanzeo": "관저동",
-    "doan" : "도안동",
+    "share": "무료나눔",
+    "sale": "판매",
   };
 
   void initState() {
     // TODO: implement initState
     super.initState();
-    currentLocation = "gasuwon";
+    currentLocation = "share";
   }
 
   PreferredSizeWidget _appbarWidget() {
@@ -100,9 +102,8 @@ class _HomeState extends State<Home> {
           },
           itemBuilder: (BuildContext  context) {
             return [
-              PopupMenuItem(value: "gasuwon", child: Text("가수원동")),
-              PopupMenuItem(value: "guanzeo", child: Text("관저동")),
-              PopupMenuItem(value: "doan", child: Text("도안동")),
+              PopupMenuItem(value: "share", child: Text("무료나눔")),
+              PopupMenuItem(value: "sale", child: Text("판매")),
             ];
           },
           child: Row(
@@ -133,16 +134,29 @@ class _HomeState extends State<Home> {
     return contentsRepository.loadContentsFromLocation(currentLocation);
   }
 
+  Future<List<PostModel>> getPostModels() async {
+    CollectionReference<Map<String, dynamic>> collectionReference =
+        FirebaseFirestore.instance.collection("post");
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await collectionReference.orderBy("foodshelf").get();
+
+    for (var doc in querySnapshot.docs) {
+      PostModel postModel = PostModel.fromQuerySnapShot(doc);
+      datas2.add(postModel);
+    }
+    return datas2;
+  }
+
   _makeDataList(List<Map<String, String>> datas) {
+    getPostModels();
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       itemBuilder: (BuildContext _context, int index) {
         return GestureDetector(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-              return DetailContentView(data: datas[index],);
+              return DetailContentView(data: datas[index]);
             }));
-            print(datas[index]["title"]);
           },
           child : Container(
             padding: const EdgeInsets.symmetric(vertical: 10), //위아래만 패딩
@@ -152,7 +166,7 @@ class _HomeState extends State<Home> {
                     borderRadius: BorderRadius.all(Radius.circular(25)),
                     child: Hero(
                       tag: datas[index]["cid"]!,
-                      child: Image.asset(datas[0]["image"]!,
+                      child: Image.asset(datas[index]["image"]!,
                         width: 100,
                         height: 100,
                         fit: BoxFit.cover,
@@ -167,19 +181,20 @@ class _HomeState extends State<Home> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              datas[index]["title"].toString(),
+                              datas2[1].title.toString(),
+                              //datas[index]["title"].toString(),
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(fontSize: 15),
                             ),
                             SizedBox(height: 5),
                             Text(
-                              datas[index]["location"].toString(),
+                              datas2[1].location.toString(),
                               style: TextStyle(fontSize: 12, color: Colors.black
                                   .withOpacity(0.3)),
                             ),
                             SizedBox(height: 5),
                             Text(
-                              DataUtils.calcStringToWon(datas[index]["price"].toString()),
+                              DataUtils.calcStringToWon(datas2[1].price.toString()),
                               style: TextStyle(fontWeight: FontWeight.w500),
                             ),
                             Expanded(
@@ -194,7 +209,7 @@ class _HomeState extends State<Home> {
                                       height: 13,
                                     ),
                                     SizedBox(width: 5),
-                                    Text(datas[index]["likes"].toString()),
+                                    Text(datas2[1].foodshelf.toString()),
                                   ],
                                 ),
                               ),
@@ -241,7 +256,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appbarWidget(),
-      body: _bodyWidget(),
+      body:
+      _bodyWidget(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         child: Icon(Icons.add),

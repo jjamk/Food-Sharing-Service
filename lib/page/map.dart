@@ -46,7 +46,7 @@ class _MapViewState extends State<MapView> {
                 GoogleMap(
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
-                  mapType: MapType.hybrid,
+                  mapType: MapType.normal,
                   initialCameraPosition: _kGooglePlex,
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
@@ -71,7 +71,7 @@ class _MapViewState extends State<MapView> {
     );
     CameraPosition cameraPosition = new CameraPosition(
       target: LatLng(value.latitude, value.longitude),
-      zoom: 14,
+      zoom: 17,
     );
 
     final GoogleMapController controller = await _controller.future;

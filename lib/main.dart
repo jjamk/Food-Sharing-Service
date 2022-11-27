@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:home/firebase_options.dart';
 import 'package:home/page/app.dart';
+import 'package:home/page/login.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +36,8 @@ class MyApp extends StatelessWidget {
         Locale('ko', ''),
         Locale(' en', ''),
       ],
-      home: App(),
+      home: login(),
+      //App(),
     );
   }
 }
