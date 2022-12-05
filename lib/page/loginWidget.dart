@@ -46,6 +46,7 @@ class loginWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Text("구글 아이디로 로그인"),
             _googleloginButton(),
           ],
         ),

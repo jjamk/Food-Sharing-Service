@@ -1,35 +1,86 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:home/models/PostModel.dart';
 import 'package:home/page/chat.dart';
 import 'package:home/utils/data_utils.dart';
 
 class DetailContentView extends StatefulWidget {
-  Map<String, String> data;
-  DetailContentView({Key? key, required this.data}) : super(key: key);
+  //Map<dynamic, dynamic> data; required this.index
+  DetailContentView({Key? key}) : super(key: key);
 
   @override
   _DetailContentViewState createState() => _DetailContentViewState();
 }
 
 class _DetailContentViewState extends State<DetailContentView> {
-  late Size size;
-  late List<Map<String,String>> imgList;
+  List<PostModel> datas2 = [];
+  //late Size size;
+  late List<Widget> imgList=[];
   late int _current;
+  late Size size = MediaQuery.of(context).size;
+
   @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    size = MediaQuery.of(context).size; //화면 가로 길이 받기
-    _current = 0;
-    imgList = [
-      {"id": "0", "url": widget.data["image"]!},
-      {"id": "1", "url": widget.data["image"]!},
-      {"id": "2", "url": widget.data["image"]!},
-      {"id": "3", "url": widget.data["image"]!},
-      {"id": "4", "url": widget.data["image"]!},
-    ];
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getPostModels();
   }
+
+  Future getPostModels() async {
+    datas2=[];
+    CollectionReference<Map<String, dynamic>> collectionReference;
+
+    print(currentLocations.currentLocation);
+    if (currentLocations.currentLocation == "share") {
+      collectionReference =
+          FirebaseFirestore.instance.collection("post");
+    }
+    else {
+      collectionReference =
+          FirebaseFirestore.instance.collection("post2");
+      print('hey');
+    }
+    //유통기한 임박순으로 정렬
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+    await collectionReference.orderBy("foodshelf").get();
+
+    for (var doc in querySnapshot.docs) {
+      PostModel postModel = PostModel.fromQuerySnapShot(doc);
+      datas2.add(postModel);
+    }
+
+    imgList.add(Image.network(datas2[0].image.toString(),
+      width: 100,
+      height: 100,
+      //fit: BoxFit.fill,
+    ),);
+
+    print(datas2[currentLocations.index2].image);
+    print(imgList);
+    //return datas2;
+    // CollectionReference<Map<String, dynamic>> collectionReference =
+    // FirebaseFirestore.instance.collection("post");
+    // QuerySnapshot<Map<String, dynamic>> querySnapshot =
+    // await collectionReference.orderBy("foodshelf").get();
+    //
+    // for (var doc in querySnapshot.docs) {
+    //   PostModel postModel = PostModel.fromQuerySnapShot(doc);
+    //   datas2.add(postModel);
+    // }
+    //  return datas2;
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   // TODO: implement didChangeDependencies
+  //   super.didChangeDependencies();
+  //   size = MediaQuery.of(context).size; //화면 가로 길이 받기
+  //   _current = 0;
+  //   imgList = [
+  //   ];
+  // }
 
   PreferredSizeWidget _appbarWidget() {
     return AppBar(
@@ -46,56 +97,27 @@ class _DetailContentViewState extends State<DetailContentView> {
     );
   }
 
+
   Widget _makeSliderImage() {
      return Container(
-       child: Stack(
-         children: [
-           Hero(
-             tag: widget.data["cid"]!,
-             child:
-             CarouselSlider(
-               options: CarouselOptions(
-                 height: size.width,
-                 initialPage: 0,
-                 enableInfiniteScroll: false,
-                 viewportFraction: 1,
-                 onPageChanged: (index, reason) {
-                   _current = index;
-                 },
-               ),
-               items: imgList.map(
-                       (map) {
-                     return Image.asset(
-                       map["url"]!,
-                       width: size.width,
-                       fit: BoxFit.fill,
-                     );
-                   }).toList(),
-             ),
-           ),
-           Positioned(
-             bottom: 0,
-             left: 0,
-             right: 0,
-             child: Row(
-               mainAxisAlignment: MainAxisAlignment.center,
-               children: imgList.map((map) {
-                 return Container(
-                   width: 12.0,
-                   height: 12.0,
-                   margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
-                   decoration: BoxDecoration(
-                       shape: BoxShape.circle,
-                       color: (Theme.of(context).brightness == Brightness.dark
-                           ? Colors.white
-                           : Colors.black)
-                           .withOpacity(_current == int.parse(map["id"]!) ? 0.9 : 0.4)),
-                 );
-               }).toList(),
-             ),
-           )
-         ],
-       ),
+       child: imgList[0]
+       //Image.network(datas2[currentLocations.index2].image.toString(),
+         //fit: BoxFit.fill,
+         //   Hero(
+         //     tag: "gg",
+         //     child:
+         //     CarouselSlider(
+         //       options: CarouselOptions(
+         //         height: size.width,
+         //         initialPage: 0,
+         //         enableInfiniteScroll: false,
+         //         viewportFraction: 1,
+         //         // onPageChanged: (index, reason) {
+         //         //   _current = 0;
+         //         // },
+         //       ),
+         //       items: imgList,
+         //     )
      );
   }
 
@@ -145,21 +167,22 @@ class _DetailContentViewState extends State<DetailContentView> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            widget.data["title"]!,
+            datas2[0].title.toString(),
+            //widget.data["title"]!,
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
             ),
           ),
           Text(
-            "유통기한",
+            '유통기한: ${datas2[0].content.toString()}',
             style: TextStyle(
               color: Colors.grey,
               fontSize: 12,
             ),
           ),
           Text(
-            "이거 정말~ 맛있습니다",
+            datas2[0].content.toString(),
             style: TextStyle(
               fontSize: 15,
               height: 2
@@ -214,7 +237,7 @@ class _DetailContentViewState extends State<DetailContentView> {
             children: [
               SizedBox(height: 12),
               Text(
-                  DataUtils.calcStringToWon(widget.data["price"]!),
+                  DataUtils.calcStringToWon(datas2[currentLocations.index2].price.toString()!),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17,

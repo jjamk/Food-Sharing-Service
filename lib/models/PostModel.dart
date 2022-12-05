@@ -7,13 +7,14 @@ class PostModel {
     required this.foodshelf,
     required this.location,
     required this.price,
-    //this.image
+    required this.image
 });
   String? title;
   String? content;
   String? foodshelf;
   String? location;
   String? price;
+  String? image;
 
   PostModel.fromJson(dynamic json) {
     title = json['title'];
@@ -21,6 +22,7 @@ class PostModel {
     foodshelf = json['foodshelf'];
     location = json['location'];
     price = json['price'];
+    image = json['image'];
   }
 
   PostModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>>snapshot)

@@ -47,12 +47,13 @@ class _ChattingPageState extends State<ChattingPage> {
     var p = Provider.of<ChattingProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: Colors.white,
         leading: GestureDetector(
             onTap: () {
               Navigator.of(context).pop();
             },
-            child: Icon(Icons.arrow_back_ios_rounded)),
+            child: Icon(Icons.arrow_back_ios_rounded,
+            color: Colors.black,)),
       ),
       body: Column(
         children: [

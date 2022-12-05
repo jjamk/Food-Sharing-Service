@@ -60,13 +60,13 @@ List<String> recentList = ["검색기록"];
           );
         });
   }
-  
 }
 
 class _HomeState extends State<Home> {
-  List<PostModel> datas2 = [];
+  List<PostModel> datas2 =[];
 
-  late String currentLocation;
+  static late int current_index=0;
+  //static late String currentLocation;
   ContentsRepository contentsRepository = new ContentsRepository();
   final Map<String, String> locationTypeToString = {
     "share": "무료나눔",
@@ -76,7 +76,7 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    currentLocation = "share";
+    getPostModels();
   }
 
   PreferredSizeWidget _appbarWidget() {
@@ -97,7 +97,9 @@ class _HomeState extends State<Home> {
 
           onSelected: (String where) {
             setState(() {
-              currentLocation = where;
+              currentLocations.currentLocation = where;
+              getPostModels();
+              print(currentLocations.currentLocation);
             });
           },
           itemBuilder: (BuildContext  context) {
@@ -108,8 +110,8 @@ class _HomeState extends State<Home> {
           },
           child: Row(
           children: [
-            Text(locationTypeToString[currentLocation]!),
-            Icon(Icons.arrow_drop_down,color: Colors.black ),
+            Text(locationTypeToString[currentLocations.currentLocation]!),
+            Icon(Icons.arrow_drop_down, color: Colors.black ),
           ],
         ),
         ),
@@ -130,13 +132,25 @@ class _HomeState extends State<Home> {
     );
   }
 
-  _loadContents(){
-    return contentsRepository.loadContentsFromLocation(currentLocation);
+  _loadContents() {
+    //await Future.delayed(Duration(seconds: 1));
+    return contentsRepository.loadContentsFromLocation(currentLocations.currentLocation);
   }
 
   Future<List<PostModel>> getPostModels() async {
-    CollectionReference<Map<String, dynamic>> collectionReference =
-        FirebaseFirestore.instance.collection("post");
+    datas2=[];
+    CollectionReference<Map<String, dynamic>> collectionReference;
+
+    if (currentLocations.currentLocation == "share") {
+      collectionReference =
+      FirebaseFirestore.instance.collection("post");
+    }
+    else {
+      collectionReference =
+      FirebaseFirestore.instance.collection("post2");
+      print('hey');
+    }
+    //유통기한 임박순으로 정렬
     QuerySnapshot<Map<String, dynamic>> querySnapshot =
         await collectionReference.orderBy("foodshelf").get();
 
@@ -144,86 +158,93 @@ class _HomeState extends State<Home> {
       PostModel postModel = PostModel.fromQuerySnapShot(doc);
       datas2.add(postModel);
     }
+
+    current_index = datas2.length;
+
     return datas2;
   }
 
   _makeDataList(List<Map<String, String>> datas) {
-    getPostModels();
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       itemBuilder: (BuildContext _context, int index) {
         return GestureDetector(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-              return DetailContentView(data: datas[index]);
-            }));
+            currentLocations.index2=index;
+            print('index is ${currentLocations.index2}');
+            print('current is ${currentLocations.currentLocation}');
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                DetailContentView()));
           },
           child : Container(
             padding: const EdgeInsets.symmetric(vertical: 10), //위아래만 패딩
-            child: Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                    child: Hero(
-                      tag: datas[index]["cid"]!,
-                      child: Image.asset(datas[index]["image"]!,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                      child: Container(
-                        height: 100,
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              datas2[1].title.toString(),
-                              //datas[index]["title"].toString(),
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              datas2[1].location.toString(),
-                              style: TextStyle(fontSize: 12, color: Colors.black
-                                  .withOpacity(0.3)),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              DataUtils.calcStringToWon(datas2[1].price.toString()),
-                              style: TextStyle(fontWeight: FontWeight.w500),
-                            ),
-                            Expanded(
-                              child: Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    SvgPicture.asset(
-                                      "assets/svg/heart_off.svg",
-                                      width: 13,
-                                      height: 13,
-                                    ),
-                                    SizedBox(width: 5),
-                                    Text(datas2[1].foodshelf.toString()),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
+            child: SingleChildScrollView(
+                child: Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                        child: Hero(
+                          tag: "gg",//datas2[index]["cid"]!,
+                          child: Image.network(datas2[index].image.toString(),
+                            width: 100,
+                            height: 100,
+                            //fit: BoxFit.fill,
+                          ),
                         ),
-                      )
-                  ),
-                ]
-            )
+                      ),
+                      Expanded(
+                          child: Container(
+                            height: 100,
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  datas2[index].title.toString(),
+                                  //datas[index]["title"].toString(),
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  datas2[index].location.toString(),
+                                  style: TextStyle(fontSize: 12, color: Colors.black
+                                      .withOpacity(0.3)),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  DataUtils.calcStringToWon(datas2[index].price.toString()),
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        SvgPicture.asset(
+                                          "assets/svg/heart_off.svg",
+                                          width: 13,
+                                          height: 13,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(datas2[index].foodshelf.toString()),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                      ),
+                    ]
+                )
+
+            ),
         )
         );
       },
-      itemCount: datas.length,
+      itemCount: datas2.length,
       separatorBuilder: (BuildContext _context, int index) {
         return Container(height: 1, color: Colors.black.withOpacity(0.4));
       },
@@ -234,20 +255,36 @@ class _HomeState extends State<Home> {
     return FutureBuilder(
       future: _loadContents(),
       builder : (BuildContext context, dynamic snapshot) {
-        //로딩 처리
-        if (snapshot.connectionState != ConnectionState.done) {
-          return Center(child: CircularProgressIndicator());
-        }
+      //로딩 처리
+      //   if (current_index == 0)
+      //     {
+      //       getPostModels();
+      //     }
+
+      if (snapshot.connectionState != ConnectionState.done) {
+      return Center(child: CircularProgressIndicator());
+      }
         //에러 처리
         if (snapshot.hasError){
           return Center(child: Text("데이터 오류"));
         }
-        if (snapshot.hasData) {
+
+        //새 글이 올라왔을 때
+      if (datas2.length != current_index)
+        {
+          getPostModels();
+          print(datas2.length);
+          print("new");
+          //print(current_index);
           return _makeDataList(snapshot.data);
         }
+      //새 글이 올라오지 않았을 때
+       if (snapshot.hasData) {
+         print(current_index);
+         print("no new");
+         return _makeDataList(snapshot.data);
+      }
         return Center(child: Text("해당 지역에 데이터가 없습니다."));
-
-
       },
     );
   }

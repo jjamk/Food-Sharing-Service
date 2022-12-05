@@ -9,5 +9,9 @@ class DataUtils {
     //판매
     return "${oCcy.format(int.parse(priceString))}원";
   }
+}
 
+class currentLocations {
+  static String currentLocation = "share";
+  static int index2 = 0;
 }

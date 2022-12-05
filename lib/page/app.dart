@@ -20,7 +20,7 @@ class _AppState extends State<App>{
   void initState() {
     // TODO: implement initState
     super.initState();
-    _currentPageIndex = 0;
+    _currentPageIndex = 1;
   }
 
   Widget _bodyWidget() {
@@ -45,7 +45,7 @@ BottomNavigationBarItem _bottomNavigationBarItem(
         ),
         activeIcon: Padding (
           padding: const EdgeInsets.only(bottom: 5),
-          child : SvgPicture.asset("assets/svg/${iconName}_off.svg", width: 33, ),
+          child : SvgPicture.asset("assets/svg/${iconName}_off.svg", width: 33, color: Colors.green),
         ),
         label: label,
     );

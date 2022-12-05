@@ -29,7 +29,7 @@ class ChattingItem extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 5),
                 padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
                 decoration: BoxDecoration(
-                    color: isMe?Colors.grey[700]:Colors.grey[800],
+                    color: isMe?Colors.green[700]:Colors.grey[800],
                     borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(30),
                         topRight: const Radius.circular(30),

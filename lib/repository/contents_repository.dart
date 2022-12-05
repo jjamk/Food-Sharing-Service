@@ -3,7 +3,7 @@ class ContentsRepository {
     "share":[
       {
         "cid": "1",
-        "image": "assets/images/img1.jpeg",
+        "image": "assets/images/food2.png",
         "title": "네메시스 축구화275",
         "location": "제주 제주시 아라동",
         "price": "30000",
@@ -11,10 +11,10 @@ class ContentsRepository {
       },
       {
         "cid": "2",
-        "image": "assets/images/img2.jpeg",
+        "image": "assets/images/food1.jpeg",
         "title": "LA갈비 5kg팔아요~",
         "location": "제주 제주시 아라동",
-        "price": "100000",
+        "price": "무료나눔",
         "likes": "5"
       },
       {
