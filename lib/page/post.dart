@@ -98,7 +98,7 @@ class _postState extends State<post> {
     scannedText = recognizedText.text;
     if (scannedText.isEmpty) print("no text");
     else {
-      print(scannedText);
+      //print(scannedText);
       filteringText = scannedText.replaceAll(RegExp('[^0-9.-]'), '').substring(0,10);
       filteringText = filteringText.replaceAll('.', '-');
     }

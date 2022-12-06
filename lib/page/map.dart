@@ -57,15 +57,16 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
+
   int selectedIndex = 0;
   //var currentLocation = AppConstants.myLocation;
   GoogleMapController? mapController;
-
+  //late CameraPosition _current = _kGooglePlex;
 
   final pageController = PageController();
   Completer<GoogleMapController> _controller = Completer();
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
+  static late CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
@@ -94,17 +95,27 @@ class _MapViewState extends State<MapView> {
 
   ];
 
+
   Future<Position> getUserCurrentLocation() async {
     await Geolocator.requestPermission().then((value){
     }).onError((error, stackTrace) async {
       await Geolocator.requestPermission();
       print("ERROR"+error.toString());
     });
-    return await Geolocator.getCurrentPosition();
+    Position current = await Geolocator.getCurrentPosition();
+    _kGooglePlex = CameraPosition(
+      target: LatLng(current.latitude, current.longitude),
+      zoom: 14.4746,
+    );
+    //_getCurrentLagLng(current);
+    return current;
+    //return await Geolocator.getCurrentPosition();
   }
 
   @override
   Widget build(BuildContext context) {
+
+
     // return Scaffold(
     //   appBar: _appbarWidget(),
     //   body:
@@ -128,6 +139,7 @@ class _MapViewState extends State<MapView> {
                   mapType: MapType.normal,
                   initialCameraPosition: _kGooglePlex,
                   onMapCreated: (GoogleMapController controller) {
+                    getUserCurrentLocation();
                     _controller.complete(controller);
                   },
                   markers: _markers.toSet(),
@@ -231,15 +243,17 @@ class _MapViewState extends State<MapView> {
             print(value.latitude.toString() +" "+value.longitude.toString());
 
             // marker added for current users location
-            _markers.add(
-                Marker(
-                  markerId: MarkerId("2"),
-                  position: LatLng(value.latitude, value.longitude),
-                  infoWindow: InfoWindow(
-                    title: 'My Current Location',
-                  ),
-                )
-            );
+            // _markers.add(
+            //     Marker(
+            //       markerId: MarkerId("2"),
+            //       position: LatLng(value.latitude, value.longitude),
+            //       infoWindow: InfoWindow(
+            //         title: 'My Current Location',
+            //       ),
+            //     )
+            // );
+            //current_lang = value.latitude;
+            //current_long = value.longitude;
             CameraPosition cameraPosition = new CameraPosition(
               target: LatLng(value.latitude, value.longitude),
               zoom: 17,
