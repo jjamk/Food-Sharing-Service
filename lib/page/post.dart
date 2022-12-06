@@ -340,16 +340,18 @@ class _postState extends State<post> {
         .child('jpg');
     await firebaseStorageRef.putFile(File(_image!.path));
 
+    var now = DateTime.now().millisecondsSinceEpoch;
     //랜덤키 생성
-    const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-    Random _rnd = Random();
-    String getRandomString(int length) =>
-        String.fromCharCodes(Iterable.generate(
-            length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+    // const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    // Random _rnd = Random();
+    // String getRandomString(int length) =>
+    //     String.fromCharCodes(Iterable.generate(
+    //         length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
     final url = await firebaseStorageRef.getDownloadURL();
     final user = FirebaseFirestore.instance;
-    postKey = getRandomString(16);
+    // postKey = getRandomString(16);
+    postKey = now.toString();
 
     print(_isShareChecked);
 

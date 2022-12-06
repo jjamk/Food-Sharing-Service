@@ -12,6 +12,7 @@ class DataUtils {
 }
 
 class currentLocations {
+  static String currentSort = "default";
   static String currentLocation = "share";
   static int index2 = 0;
 }

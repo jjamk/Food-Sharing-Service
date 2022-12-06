@@ -72,6 +72,10 @@ class _HomeState extends State<Home> {
     "share": "무료나눔",
     "sale": "판매",
   };
+  final Map<String, String> sortTypeToString = {
+    "default": "최신순",
+    "foodshelf": "유통기한순",
+  };
 
   void initState() {
     // TODO: implement initState
@@ -125,9 +129,34 @@ class _HomeState extends State<Home> {
               delegate: MySearchDelegate(),
           );
         }, icon: Icon(Icons.search, color: Colors.black)),
-        IconButton(onPressed: () {}, icon: Icon(Icons.tune, color: Colors.black)),
-        IconButton(onPressed: () {}, icon: SvgPicture.asset("assets/svg/bell.svg",
-          width: 22,)),
+        PopupMenuButton<String>(
+          offset: Offset(0,40),
+          shape: ShapeBorder.lerp(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+              1),
+
+          onSelected: (String where) {
+            setState(() {
+              currentLocations.currentSort = where;
+            });
+          },
+          itemBuilder: (BuildContext  context) {
+            return [
+              PopupMenuItem(value: "default", child: Text("최신순")),
+              PopupMenuItem(value: "foodshelf", child: Text("유통기한순")),
+            ];
+          },
+          child: Row(
+            children: [
+              Icon(Icons.tune, color: Colors.black ),
+            ],
+          ),
+        ),
+        // IconButton(onPressed: () {
+        // }, icon: Icon(Icons.tune, color: Colors.black)),
+        //IconButton(onPressed: () {}, icon: SvgPicture.asset("assets/svg/bell.svg",
+        //  width: 22,)),
       ],
     );
   }
@@ -150,15 +179,24 @@ class _HomeState extends State<Home> {
       FirebaseFirestore.instance.collection("post2");
       print('hey');
     }
-    //유통기한 임박순으로 정렬
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await collectionReference.orderBy("foodshelf").get();
-
-    for (var doc in querySnapshot.docs) {
-      PostModel postModel = PostModel.fromQuerySnapShot(doc);
-      datas2.add(postModel);
+    //최신순(기본값)
+    if (currentLocations.currentSort == "default") {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+      await collectionReference.orderBy("postkey", descending: true).get();
+      for (var doc in querySnapshot.docs) {
+        PostModel postModel = PostModel.fromQuerySnapShot(doc);
+        datas2.add(postModel);
+      }
     }
-
+    //유통기한 임박순으로 정렬
+    else {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+      await collectionReference.orderBy("foodshelf",).get();
+      for (var doc in querySnapshot.docs) {
+        PostModel postModel = PostModel.fromQuerySnapShot(doc);
+        datas2.add(postModel);
+      }
+    }
     current_index = datas2.length;
 
     return datas2;
@@ -268,7 +306,8 @@ class _HomeState extends State<Home> {
         if (snapshot.hasError){
           return Center(child: Text("데이터 오류"));
         }
-
+        if (datas2.length == 0)
+          return Center(child: Text("게시된 글이 없습니다."));
         //새 글이 올라왔을 때
       if (datas2.length != current_index)
         {

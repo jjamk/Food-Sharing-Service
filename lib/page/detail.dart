@@ -146,7 +146,7 @@ class _DetailContentViewState extends State<DetailContentView> {
                 )
             ),
             Text(
-                "대전 가수원동"
+                "대전 관저동"
             ),
           //매너온도는 강의 #9 에서
           ],
