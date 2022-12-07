@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home/models/PostModel.dart';
 import 'package:intl/intl.dart';
 
 class DataUtils {
@@ -15,4 +16,9 @@ class currentLocations {
   static String currentSort = "default";
   static String currentLocation = "share";
   static int index2 = 0;
+  static late List<PostModel> datas2 = [];
+}
+
+class currentuser {
+  static String currentUserEmail = ""; //현재 사용자 메일
 }

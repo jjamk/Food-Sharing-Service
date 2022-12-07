@@ -41,6 +41,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  shared_preferences: ^2.0.15
+  get: ^4.6.5
+  permission_handler: ^10.2.0
   google_sign_in: ^5.4.2
   firebase_auth: ^4.1.4
   firebase_storage: ^11.0.6

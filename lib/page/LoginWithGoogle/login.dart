@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:home/page/app.dart';
-import 'package:home/page/loginWidget.dart';
+import 'package:home/page/LoginWithGoogle/loginWidget.dart';
+import 'package:home/page/login_page.dart';
 
 
 class login extends StatelessWidget {
@@ -16,6 +17,7 @@ class login extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
           if (!snapshot.hasData) {
+            //return loginWidget();
             return loginWidget();
           }
           else {

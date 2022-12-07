@@ -5,6 +5,7 @@ import 'package:home/screens/chatting_page/local_utils/ChattingProvider.dart';
 import 'package:home/screens/chatting_page/local_widgets/chatting_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class ChattingPage extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class ChattingPage extends StatefulWidget {
 class _ChattingPageState extends State<ChattingPage> {
   late TextEditingController _controller;
   late StreamSubscription _streamSubscription;
+  var u = const Uuid().v1();
 
   bool firstLoad = true;
   
@@ -45,15 +47,17 @@ class _ChattingPageState extends State<ChattingPage> {
   @override
   Widget build(BuildContext context) {
     var p = Provider.of<ChattingProvider>(context);
-    return Scaffold(
+    return WillPopScope(
+      child: Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        leading: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Icon(Icons.arrow_back_ios_rounded,
-            color: Colors.black,)),
+        // leading: GestureDetector(
+        //     onTap: () {
+        //       Navigator.of(context).pop();
+        //     },
+        //     child: Icon(Icons.arrow_back_ios_rounded,
+        //     color: Colors.black,)),
       ),
       body: Column(
         children: [
@@ -109,6 +113,7 @@ class _ChattingPageState extends State<ChattingPage> {
           )
         ],
       ),
-    );
+    ),
+    onWillPop: () async => false,);
   }
 }

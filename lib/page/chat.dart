@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:home/repository/HomeModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:home/repository/contents_repository.dart';
+import 'package:home/screens/chatting_page/chatting_page.dart';
+import 'package:home/screens/chatting_page/local_utils/ChattingProvider.dart';
+import 'package:home/utils/data_utils.dart';
 import 'package:home/utils/entrance_page.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 class ChatView extends StatefulWidget {
   const ChatView({Key? key}) : super(key: key);
 
@@ -26,10 +30,27 @@ class _ChatViewState extends State<ChatView> {
       _counter++;
     });
   }
+
+  chat () {
+    var u = const Uuid().v1();
+
+    // Navigator.pop(context);
+   // Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+    //Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            ChangeNotifierProvider(
+              create: (context) => ChattingProvider(u, currentuser.currentUserEmail),
+              child: ChattingPage(),
+            )));
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    return ChangeNotifierProvider(create: (context) => EntranceProvider(), child: EntrancePage(),);
+    var u = const Uuid().v1();
+   // return chat();
+    return ChangeNotifierProvider( create: (context) => ChattingProvider(u, currentuser.currentUserEmail), child: ChattingPage(),);
 
     // return Container(
     //   child: Image.network(contentsRepository.datas[0]["image"],

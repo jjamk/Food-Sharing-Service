@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home/models/PostModel.dart';
 import 'package:home/page/detail.dart';
+import 'package:home/page/LoginWithGoogle/login.dart';
+import 'package:home/page/login_page.dart';
 import 'package:home/repository/contents_repository.dart';
 import 'package:home/utils/data_utils.dart';
 import 'package:home/page/post.dart';
@@ -63,8 +66,6 @@ List<String> recentList = ["검색기록"];
 }
 
 class _HomeState extends State<Home> {
-  List<PostModel> datas2 =[];
-
   static late int current_index=0;
   //static late String currentLocation;
   ContentsRepository contentsRepository = new ContentsRepository();
@@ -85,6 +86,7 @@ class _HomeState extends State<Home> {
 
   PreferredSizeWidget _appbarWidget() {
     return AppBar(
+      backgroundColor: Colors.lightGreen,
       title: GestureDetector(
         onTap: () {
           print("click");
@@ -115,7 +117,7 @@ class _HomeState extends State<Home> {
           child: Row(
           children: [
             Text(locationTypeToString[currentLocations.currentLocation]!),
-            Icon(Icons.arrow_drop_down, color: Colors.black ),
+            Icon(Icons.arrow_drop_down, color: Colors.white ),
           ],
         ),
         ),
@@ -128,7 +130,7 @@ class _HomeState extends State<Home> {
               context: context,
               delegate: MySearchDelegate(),
           );
-        }, icon: Icon(Icons.search, color: Colors.black)),
+        }, icon: Icon(Icons.search, color: Colors.white)),
         PopupMenuButton<String>(
           offset: Offset(0,40),
           shape: ShapeBorder.lerp(
@@ -149,7 +151,7 @@ class _HomeState extends State<Home> {
           },
           child: Row(
             children: [
-              Icon(Icons.tune, color: Colors.black ),
+              Icon(Icons.tune, color: Colors.white ),
             ],
           ),
         ),
@@ -167,7 +169,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<List<PostModel>> getPostModels() async {
-    datas2=[];
+    currentLocations.datas2=[];
     CollectionReference<Map<String, dynamic>> collectionReference;
 
     if (currentLocations.currentLocation == "share") {
@@ -185,7 +187,7 @@ class _HomeState extends State<Home> {
       await collectionReference.orderBy("postkey", descending: true).get();
       for (var doc in querySnapshot.docs) {
         PostModel postModel = PostModel.fromQuerySnapShot(doc);
-        datas2.add(postModel);
+        currentLocations.datas2.add(postModel);
       }
     }
     //유통기한 임박순으로 정렬
@@ -194,12 +196,12 @@ class _HomeState extends State<Home> {
       await collectionReference.orderBy("foodshelf",).get();
       for (var doc in querySnapshot.docs) {
         PostModel postModel = PostModel.fromQuerySnapShot(doc);
-        datas2.add(postModel);
+        currentLocations.datas2.add(postModel);
       }
     }
-    current_index = datas2.length;
+    current_index = currentLocations.datas2.length;
 
-    return datas2;
+    return currentLocations.datas2;
   }
 
   _makeDataList(List<Map<String, String>> datas) {
@@ -222,8 +224,8 @@ class _HomeState extends State<Home> {
                       ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(25)),
                         child: Hero(
-                          tag: "gg",//datas2[index]["cid"]!,
-                          child: Image.network(datas2[index].image.toString(),
+                          tag: currentLocations.datas2[index],//datas2[index]["cid"]!,
+                          child: Image.network(currentLocations.datas2[index].image.toString(),
                             width: 100,
                             height: 100,
                             //fit: BoxFit.fill,
@@ -238,20 +240,20 @@ class _HomeState extends State<Home> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  datas2[index].title.toString(),
+                                  currentLocations.datas2[index].title.toString(),
                                   //datas[index]["title"].toString(),
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(fontSize: 15),
                                 ),
                                 SizedBox(height: 5),
                                 Text(
-                                  datas2[index].location.toString(),
+                                  currentLocations.datas2[index].location.toString(),
                                   style: TextStyle(fontSize: 12, color: Colors.black
                                       .withOpacity(0.3)),
                                 ),
                                 SizedBox(height: 5),
                                 Text(
-                                  DataUtils.calcStringToWon(datas2[index].price.toString()),
+                                  DataUtils.calcStringToWon(currentLocations.datas2[index].price.toString()),
                                   style: TextStyle(fontWeight: FontWeight.w500),
                                 ),
                                 Expanded(
@@ -260,13 +262,13 @@ class _HomeState extends State<Home> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
-                                        SvgPicture.asset(
-                                          "assets/svg/heart_off.svg",
-                                          width: 13,
-                                          height: 13,
-                                        ),
-                                        SizedBox(width: 5),
-                                        Text(datas2[index].foodshelf.toString()),
+                                        // SvgPicture.asset(
+                                        //   "assets/svg/heart_off.svg",
+                                        //   width: 13,
+                                        //   height: 13,
+                                        // ),
+                                        // SizedBox(width: 5),
+                                        Text('${currentLocations.datas2[index].foodshelf.toString()}까지'),
                                       ],
                                     ),
                                   ),
@@ -282,7 +284,7 @@ class _HomeState extends State<Home> {
         )
         );
       },
-      itemCount: datas2.length,
+      itemCount: currentLocations.datas2.length,
       separatorBuilder: (BuildContext _context, int index) {
         return Container(height: 1, color: Colors.black.withOpacity(0.4));
       },
@@ -306,13 +308,13 @@ class _HomeState extends State<Home> {
         if (snapshot.hasError){
           return Center(child: Text("데이터 오류"));
         }
-        if (datas2.length == 0)
+        if (currentLocations.datas2.length == 0)
           return Center(child: Text("게시된 글이 없습니다."));
         //새 글이 올라왔을 때
-      if (datas2.length != current_index)
+      if (currentLocations.datas2.length != current_index)
         {
           getPostModels();
-          print(datas2.length);
+          print(currentLocations.datas2.length);
           print("new");
           //print(current_index);
           return _makeDataList(snapshot.data);
@@ -330,8 +332,41 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: _appbarWidget(),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              accountName: Text('${currentuser.currentUserEmail}님',
+              style: TextStyle(color: Colors.black)),
+              accountEmail: Text(""),
+              currentAccountPicture: CircleAvatar(
+                radius: 25,
+                backgroundImage: Image.asset("assets/images/user.png").image,
+                backgroundColor: Colors.transparent,),
+              // onDetailsPressed: () {
+              //   print('arrow is clicked');
+              // },
+              decoration: BoxDecoration(
+                color: Colors.green[600],
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40.0),
+                  bottomRight: Radius.circular(40.0))),
+                ),
+      TextButton(
+          onPressed: () async {
+        await FirebaseAuth.instance.signOut();
+        Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      },
+          child: Text("로그아웃"),
+              ),
+          ],
+        ),
+      ),
       body:
       _bodyWidget(),
       floatingActionButton: FloatingActionButton(

@@ -15,72 +15,26 @@ class DetailContentView extends StatefulWidget {
 }
 
 class _DetailContentViewState extends State<DetailContentView> {
-  List<PostModel> datas2 = [];
-  //late Size size;
-  late List<Widget> imgList=[];
+  late Size size;
+  final List<Widget> imgList=[
+  Image.network(
+  currentLocations.datas2[currentLocations.index2].image.toString())
+  ];
   late int _current;
-  late Size size = MediaQuery.of(context).size;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getPostModels();
   }
 
-  Future getPostModels() async {
-    datas2=[];
-    CollectionReference<Map<String, dynamic>> collectionReference;
-
-    print(currentLocations.currentLocation);
-    if (currentLocations.currentLocation == "share") {
-      collectionReference =
-          FirebaseFirestore.instance.collection("post");
-    }
-    else {
-      collectionReference =
-          FirebaseFirestore.instance.collection("post2");
-      print('hey');
-    }
-    //유통기한 임박순으로 정렬
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-    await collectionReference.orderBy("foodshelf").get();
-
-    for (var doc in querySnapshot.docs) {
-      PostModel postModel = PostModel.fromQuerySnapShot(doc);
-      datas2.add(postModel);
-    }
-
-    imgList.add(Image.network(datas2[0].image.toString(),
-      width: 100,
-      height: 100,
-      //fit: BoxFit.fill,
-    ),);
-
-    print(datas2[currentLocations.index2].image);
-    print(imgList);
-    //return datas2;
-    // CollectionReference<Map<String, dynamic>> collectionReference =
-    // FirebaseFirestore.instance.collection("post");
-    // QuerySnapshot<Map<String, dynamic>> querySnapshot =
-    // await collectionReference.orderBy("foodshelf").get();
-    //
-    // for (var doc in querySnapshot.docs) {
-    //   PostModel postModel = PostModel.fromQuerySnapShot(doc);
-    //   datas2.add(postModel);
-    // }
-    //  return datas2;
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    size = MediaQuery.of(context).size; //화면 가로 길이 받기
+    _current = 0;
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   // TODO: implement didChangeDependencies
-  //   super.didChangeDependencies();
-  //   size = MediaQuery.of(context).size; //화면 가로 길이 받기
-  //   _current = 0;
-  //   imgList = [
-  //   ];
-  // }
 
   PreferredSizeWidget _appbarWidget() {
     return AppBar(
@@ -100,25 +54,36 @@ class _DetailContentViewState extends State<DetailContentView> {
 
   Widget _makeSliderImage() {
      return Container(
-       child: imgList[0]
-       //Image.network(datas2[currentLocations.index2].image.toString(),
-         //fit: BoxFit.fill,
-         //   Hero(
-         //     tag: "gg",
-         //     child:
-         //     CarouselSlider(
-         //       options: CarouselOptions(
-         //         height: size.width,
-         //         initialPage: 0,
-         //         enableInfiniteScroll: false,
-         //         viewportFraction: 1,
-         //         // onPageChanged: (index, reason) {
-         //         //   _current = 0;
-         //         // },
-         //       ),
-         //       items: imgList,
-         //     )
-     );
+       child:
+           Hero(
+             tag: currentLocations.datas2,
+             child:
+
+              CarouselSlider(
+               options: CarouselOptions(
+                 height: size.width,
+                 initialPage: 0,
+                 enableInfiniteScroll: false,
+                 viewportFraction: 1,
+                 onPageChanged: (index, reason) {
+                   _current = 0;
+                 },
+               ),
+               items: imgList.map((image) {
+                 return Builder(
+                     builder: (BuildContext context) {
+                   return Container(
+                       width: MediaQuery.of(context).size.width,
+                       margin: EdgeInsets.symmetric(horizontal: 5.0),
+                       child: ClipRRect(
+                       borderRadius: BorderRadius.circular(10.0),
+                   child: image,
+                   )
+                   );
+                 });
+               }).toList(),
+             ),
+     ));
   }
 
   Widget _sellerSimpleInfo() {
@@ -139,7 +104,7 @@ class _DetailContentViewState extends State<DetailContentView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-                "지구사랑",
+                currentLocations.datas2[currentLocations.index2].username.toString(),
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16
@@ -161,28 +126,29 @@ class _DetailContentViewState extends State<DetailContentView> {
       color: Colors.grey.withOpacity(0.3),);
   }
   Widget _contentDetail() {
+    print(currentLocations.datas2[currentLocations.index2].title.toString());
+    print(currentLocations.datas2[currentLocations.index2].content.toString());
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            datas2[0].title.toString(),
-            //widget.data["title"]!,
+            currentLocations.datas2[currentLocations.index2].title.toString(),
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
             ),
           ),
           Text(
-            '유통기한: ${datas2[0].content.toString()}',
+            '유통기한: ${currentLocations.datas2[currentLocations.index2].foodshelf.toString()}',
             style: TextStyle(
               color: Colors.grey,
               fontSize: 12,
             ),
           ),
           Text(
-            datas2[0].content.toString(),
+            currentLocations.datas2[currentLocations.index2].content.toString(),
             style: TextStyle(
               fontSize: 15,
               height: 2
@@ -237,7 +203,7 @@ class _DetailContentViewState extends State<DetailContentView> {
             children: [
               SizedBox(height: 12),
               Text(
-                  DataUtils.calcStringToWon(datas2[currentLocations.index2].price.toString()!),
+                  DataUtils.calcStringToWon(currentLocations.datas2[currentLocations.index2].price.toString()!),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17,

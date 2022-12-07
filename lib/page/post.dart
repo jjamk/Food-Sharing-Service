@@ -10,6 +10,7 @@ import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:home/page/app.dart';
 import 'package:home/page/home.dart';
+import 'package:home/utils/data_utils.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -41,6 +42,7 @@ class _postState extends State<post> {
   String postPrice = "무료나눔";
   String postFoodshelf = "";
   String postKey = "";
+  String username=currentuser.currentUserEmail;
 
   late String scannedText = "";
   late String filteringText = "";
@@ -334,13 +336,15 @@ class _postState extends State<post> {
   }
 
   Future _upload() async {
+    var now = DateTime.now().millisecondsSinceEpoch;
+    postKey = now.toString();
     final firebaseStorageRef = FirebaseStorage.instance
         .ref()
-        .child('user_image')
-        .child('jpg');
+        .child('post_image')
+        .child(postKey);
     await firebaseStorageRef.putFile(File(_image!.path));
 
-    var now = DateTime.now().millisecondsSinceEpoch;
+
     //랜덤키 생성
     // const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
     // Random _rnd = Random();
@@ -351,7 +355,7 @@ class _postState extends State<post> {
     final url = await firebaseStorageRef.getDownloadURL();
     final user = FirebaseFirestore.instance;
     // postKey = getRandomString(16);
-    postKey = now.toString();
+
 
     print(_isShareChecked);
 
@@ -363,9 +367,10 @@ class _postState extends State<post> {
         "image": url,
         "title": postTitle,
         "foodshelf": _BirthdayController.text, //postFoodshelf,
-        "location": "가수원동",
+        "location": "관저동",
         "Content": postContent,
         "price": postPrice,
+        "username": username,
       });
     }
     //판매
@@ -375,9 +380,10 @@ class _postState extends State<post> {
         "image": url,
         "title": postTitle,
         "foodshelf": _BirthdayController.text, //postFoodshelf,
-        "location": "가수원동",
+        "location": "관저동",
         "Content": postContent,
         "price": postPrice,
+        "username": username,
       });
     }
   }

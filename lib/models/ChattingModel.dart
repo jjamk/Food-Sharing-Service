@@ -9,7 +9,7 @@ class ChattingModel{
     return ChattingModel(json['pk'], json['name'], json['text'], json['uploadTime']);
   }
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'pk':pk,
       'name':name,
