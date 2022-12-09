@@ -82,25 +82,40 @@ class _join_pageState extends State<join_page> {
     }
   }
 
-  @override
+  Widget logo() {
+    return CircleAvatar(
+      backgroundImage: AssetImage('assets/images/logo.png',),
+      radius: 70,
+    );
+  }
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-        title: const Text("Login"),
+        title: const Text("회원가입"),
     centerTitle: true,
     ),
         body: Form(
           key: _scaffoldKey,
           child: Column(
             children: [
-              _userIdWidget(),
               SizedBox(height: 20,),
-              _passwordWidget(),
+              logo(),
+              SizedBox(height: 20,),
+              Container(
+                padding: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 0.0),
+                child: _userIdWidget(),
+              ),
+              SizedBox(height: 20,),
+              Container(
+                padding: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 0.0),
+                child: _passwordWidget(),
+              ),
               Container(
                 height: 70,
                 width: double.infinity,
-                padding: const EdgeInsets.only(top:8.0),
+                padding: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 0.0),
                 child: ElevatedButton(
                   onPressed: () => signUpWithEmail(_emailController.text, _passwordController.text),
                   child: Text("계정 생성"),

@@ -342,7 +342,7 @@ class _HomeState extends State<Home> {
             UserAccountsDrawerHeader(
               accountName: Text('${currentuser.currentUserEmail}님',
               style: TextStyle(color: Colors.black)),
-              accountEmail: Text(""),
+              accountEmail: Text("오늘도 남김없는 하루 되세요!",style: TextStyle(fontSize: 12),),
               currentAccountPicture: CircleAvatar(
                 radius: 25,
                 backgroundImage: Image.asset("assets/images/user.png").image,
