@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:home/page/chatPage.dart';
 import 'package:home/page/map.dart';
 
 import 'home.dart';
-import 'chat.dart';
 
 
 class App extends StatefulWidget {
@@ -30,7 +30,7 @@ class _AppState extends State<App>{
       case 1:
         return Home();
       case 2:
-        return ChatView();
+        return ChatPage();
     }
     return Container();
 }

@@ -26,7 +26,7 @@ class MapMarker {
 final mapMarkers = [
   MapMarker(
     id: '0',
-    image: 'assets/images/img2.jpeg',
+    image: 'assets/images/subway.jpeg',
     title: '써브웨이 대전 건양대점',
     address: '대전 서구 관저동로 170',
     location: LatLng(36.306456, 127.340949),),

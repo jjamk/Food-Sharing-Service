@@ -50,7 +50,7 @@ class _ChattingPageState extends State<ChattingPage> {
     return WillPopScope(
       child: Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        //automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         // leading: GestureDetector(
         //     onTap: () {
