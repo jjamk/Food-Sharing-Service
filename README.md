@@ -1,16 +1,5 @@
-# home
+# Food-Sharing-Service
 
-A new Flutter project.
+### 잉여 음식을 이웃과 쉽게 나누고 주변 가게의 마감임박 음식도 픽업해갈 수 있는 환경친화적 서비스 앱입니다.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+🔗 [Notion](https://www.notion.so/RE-787ba52a21404bee800938cb067b2781)
